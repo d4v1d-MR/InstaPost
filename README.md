@@ -1,97 +1,135 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# InstaPost
 
-# Getting Started
+Una aplicación móvil para compartir y gestionar posts con imágenes, similar a Instagram, desarrollada con React Native.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## Características principales
 
-## Step 1: Start Metro
+- Publicación de posts con imágenes
+- Sistema de likes con actualización en tiempo real
+- Navegación por pestañas
+- Mapa con ubicación de posts
+- Filtrado y búsqueda de posts
+- Ordenación de posts por fecha (más recientes primero)
+- Visualización de posts con más likes
+- Notificaciones toast personalizadas
+- Soporte para temas claro/oscuro
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## Arquitectura del proyecto
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+La aplicación está construida siguiendo una arquitectura de capas que separa claramente las responsabilidades:
 
-```sh
-# Using npm
-npm start
+### Estructura de carpetas
 
-# OR using Yarn
-yarn start
+```
+src/
+|-- app/
+|   |-- config/           # Configuración global, temas, helpers
+|   |-- domain/           # Lógica de negocio y modelos
+|   |-- infrastructure/   # Implementaciones concretas (API, almacenamiento)
+|   |-- presentation/     # Componentes UI y lógica de presentación
+|       |-- components/   # Componentes reutilizables
+|       |-- context/      # Contextos de React (tema, usuario, etc.)
+|       |-- hooks/        # Hooks personalizados
+|       |-- layouts/      # Componentes de layout
+|       |-- routes/       # Configuración de navegación
+|       |-- screens/      # Pantallas de la aplicación
+|-- server/               # Servidor mock para desarrollo
 ```
 
-## Step 2: Build and run your app
+### Patrones de diseño implementados
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+1. **Clean Architecture**: Separación clara entre dominio, infraestructura y presentación.
+2. **Hooks Pattern**: Uso extensivo de hooks personalizados para encapsular lógica reutilizable.
+3. **Context API**: Para gestionar el estado global de la aplicación.
+4. **Repository Pattern**: Para abstraer el acceso a datos.
+5. **Presentational and Container Components**: Separación entre componentes de presentación y contenedores.
 
-### Android
+## Sostenibilidad y escalabilidad
 
-```sh
-# Using npm
-npm run android
+### Sostenibilidad
 
-# OR using Yarn
-yarn android
+El proyecto es altamente sostenible debido a:
+
+- **Separación de responsabilidades**: Cada capa tiene una responsabilidad clara.
+- **Código modular**: Componentes y lógica reutilizables.
+- **Pruebas**: Estructura preparada para implementar pruebas unitarias y de integración.
+- **Documentación**: Código autodocumentado con tipos TypeScript.
+
+### Escalabilidad
+
+La arquitectura permite escalar fácilmente:
+
+- **Nuevas características**: Se pueden añadir nuevos módulos sin afectar a los existentes.
+- **Cambios en la API**: La capa de infraestructura aísla los cambios en el backend.
+- **Múltiples plataformas**: La lógica de negocio es independiente de la UI.
+- **Equipo de desarrollo**: Varios desarrolladores pueden trabajar en paralelo en diferentes módulos.
+
+## Tecnologías utilizadas
+
+### Core
+
+- **React Native**: Framework para desarrollo móvil multiplataforma.
+- **TypeScript**: Tipado estático para mejorar la calidad del código y la experiencia de desarrollo.
+
+### Estado y gestión de datos
+
+- **React Query**: Para gestionar el estado del servidor, caché y sincronización.
+- **Context API**: Para el estado global de la aplicación.
+- **Zustand**: Gestor de estado minimalista para estados específicos.
+
+### UI y navegación
+
+- **React Navigation**: Para la navegación entre pantallas.
+- **React Native Vector Icons**: Iconos vectoriales.
+- **React Native Maps**: Integración de mapas.
+- **React Native Toast Message**: Notificaciones toast personalizadas.
+
+### Backend simulado
+
+- **JSON Server**: API REST mock para desarrollo.
+
+## Configuración del entorno
+
+### Variables de entorno
+
+La aplicación utiliza `react-native-dotenv` para gestionar variables de entorno. Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
+
+```
+API_URL=http://192.168.1.36:3000
+API_URL_IOS=http://localhost:3000
+API_URL_ANDROID=http://192.168.1.36:3000
 ```
 
-### iOS
+## Funcionalidades destacadas
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+### Sistema de likes en tiempo real
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+La aplicación implementa un sistema de likes que se actualiza en tiempo real en todas las vistas:
 
-```sh
-bundle install
-```
+- Invalidación completa de consultas relacionadas con posts
+- Invalidación específica de consultas por ID y autor
+- Refetch forzado para garantizar la actualización de la UI
+- Manejo de estado local para una UI responsiva
 
-Then, and every time you update your native dependencies, run:
+### Ordenación de posts
 
-```sh
-bundle exec pod install
-```
+Los posts se ordenan por fecha (más recientes primero) en todas las vistas principales:
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+- Función `getPosts`: Obtiene todos los posts ordenados por fecha descendente
+- Función `getPostByUser`: Obtiene los posts de un usuario específico ordenados por fecha descendente
+- Función `getRecentPosts`: Obtiene explícitamente los posts más recientes
 
-```sh
-# Using npm
-npm run ios
+### Posts con más likes
 
-# OR using Yarn
-yarn ios
-```
+La aplicación muestra los posts con más likes de un usuario:
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+- Función `getPostsMostLikes`: Obtiene y ordena los posts por número de likes
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+## Justificación de las herramientas
 
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- **React Native**: Permite desarrollo multiplataforma con una única base de código, reduciendo tiempo y costos de desarrollo.
+- **TypeScript**: Mejora la calidad del código, facilita el mantenimiento y proporciona autocompletado e información de tipos.
+- **React Query**: Simplifica la gestión de datos del servidor con caché integrada, revalidación y actualizaciones optimistas.
+- **Zustand**: Alternativa ligera a Redux, con una API simple y sin boilerplate.
+- **React Navigation**: Solución de navegación completa y bien mantenida para React Native.
+- **JSON Server**: Permite simular una API REST completa sin necesidad de un backend real durante el desarrollo.
