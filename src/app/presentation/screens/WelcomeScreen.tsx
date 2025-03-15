@@ -30,7 +30,6 @@ export const WelcomeScreen = ({ navigation }: any) => {
     try {
       const success = await saveUsername(username.trim());
       if (success) {
-        // Navegar a la pantalla principal después de guardar el nombre de usuario
         console.log('Usuario guardado correctamente');
       } else {
         setError('Error al guardar el nombre de usuario. Inténtalo de nuevo.');

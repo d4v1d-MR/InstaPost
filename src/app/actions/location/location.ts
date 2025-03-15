@@ -10,7 +10,6 @@ export const getCurrentLocation = async (): Promise<Location | null> => {
       })
     }, (error) => {
       console.log('Error al obtener ubicación:', error);
-      // Resolver con null en lugar de rechazar la promesa
       resolve(null);
     }, {
       enableHighAccuracy: true,
@@ -31,16 +30,14 @@ export const watchCurrentLocation = (
     })
   }, (error) => {
     console.log('Error en watchPosition:', error);
-    // Llamar al callback de error si existe
     if (errorCallback) {
       errorCallback(error);
     }
-    // No lanzar error para evitar bloqueos
   }, {
     enableHighAccuracy: true,
-    distanceFilter: 10, // Actualizar solo cuando el usuario se mueva al menos 10 metros
-    interval: 5000, // Intervalo en ms (solo Android)
-    fastestInterval: 2000 // Intervalo más rápido (solo Android)
+    distanceFilter: 10,
+    interval: 5000,
+    fastestInterval: 2000
   })
 }
 

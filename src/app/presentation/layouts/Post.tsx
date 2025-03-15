@@ -49,7 +49,6 @@ export const Post = ({
   const { mutate: updateLikes } = updatePostLikes();
   const queryClient = useQueryClient();
 
-  // Actualizar el estado local cuando cambian las props
   useEffect(() => {
     setLikeCount(likes);
     setIsLiked(liked.includes(username!));
@@ -62,43 +61,35 @@ export const Post = ({
   const handleLikePress = (e: React.TouchEvent<HTMLElement> | any) => {
     e.stopPropagation();
     
-    // Actualizar estado local inmediatamente para UI responsiva
     const newIsLiked = !isLiked;
     setIsLiked(newIsLiked);
     const newLikeCount = newIsLiked ? likeCount + 1 : likeCount - 1;
     setLikeCount(newLikeCount);
 
-    // Preparar los datos actualizados
     const updatedLiked = newIsLiked 
       ? [...liked, username!] 
       : liked.filter(name => name !== username!);
 
-    // Actualizar en el servidor
     updateLikes({ 
       postId: id, 
       likes: newLikeCount,
       liked: updatedLiked,
     }, {
       onSuccess: () => {
-        // Invalidar TODAS las consultas relacionadas con posts
         queryClient.invalidateQueries({ queryKey: ['posts'] });
         
-        // Invalidar consultas específicas
         queryClient.invalidateQueries({ queryKey: ['posts', id.toString()] });
         queryClient.invalidateQueries({ queryKey: ['recentPosts'] });
         
-        // Invalidar consultas por autor
         if (author) {
           queryClient.invalidateQueries({ queryKey: ['posts', author] });
           queryClient.invalidateQueries({ queryKey: ['postsMostLikes', author] });
         }
         
-        // Invalidar todas las consultas de postsMostLikes
         queryClient.invalidateQueries({ 
           predicate: (query) => query.queryKey[0] === 'postsMostLikes'
         });
         
-        // Forzar refetch inmediato de todas las consultas relevantes
         setTimeout(() => {
           queryClient.refetchQueries({ queryKey: ['posts'] });
           queryClient.refetchQueries({ queryKey: ['recentPosts'] });
@@ -107,7 +98,6 @@ export const Post = ({
           });
         }, 50);
       },
-      // En caso de error, revertir los cambios locales
       onError: () => {
         setIsLiked(!newIsLiked);
         setLikeCount(likeCount);

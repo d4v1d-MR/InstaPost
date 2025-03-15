@@ -56,7 +56,6 @@ export const EditPostScreen = () => {
   const { mutate: updateLikes } = updatePostLikes();
   const queryClient = useQueryClient();
 
-  // Configuración del formulario con useForm
   const {
     values,
     errors,
@@ -79,15 +78,14 @@ export const EditPostScreen = () => {
     onSubmit: async (values) => {
       try {
         if (isEditing && postId) {
-          // Para actualización, preservar datos originales importantes
           await updatePostMutation.mutateAsync({
             id: postId,
             description: values.description,
-            author: post!.author, // Preservar autor original
+            author: post!.author, 
             image: values.image,
-            likes: post!.likes || 0, // Preservar likes
-            date: post!.date, // Preservar fecha original
-            liked: post!.liked // Preservar likes
+            likes: post!.likes || 0,
+            date: post!.date,
+            liked: post!.liked
           });
           Toast.show({
             type: 'success',
@@ -98,7 +96,6 @@ export const EditPostScreen = () => {
             swipeable: true
           });
         } else {
-          // Para creación, usar datos nuevos
           const postData: Post = {
             description: values.description,
             author: username!,
@@ -193,7 +190,6 @@ export const EditPostScreen = () => {
     }
   }, [isLoading])
 
-  // Cargar datos del post si estamos editando
   useEffect(() => {
     if (post) {
       setValues({
@@ -210,40 +206,31 @@ export const EditPostScreen = () => {
     const newLikeCount = newIsLiked ? (likeCount! + 1) : (likeCount! - 1);
     setLikeCount(newLikeCount);
 
-    // Preparar los datos actualizados de likes
     const updatedLiked = newIsLiked 
       ? [...(post?.liked || []), username!] 
       : (post?.liked || []).filter(name => name !== username!);
 
-    // Actualizar en el servidor
     updateLikes({ 
       postId: postId!, 
       likes: newLikeCount,
       liked: updatedLiked,
     }, {
       onSuccess: () => {
-        // Invalidar TODAS las consultas relacionadas con posts
-        // const queryClient = updatePostMutation.client;
-        
-        // Invalidar consultas generales
         queryClient.invalidateQueries({ queryKey: ['posts'] });
         queryClient.invalidateQueries({ queryKey: ['recentPosts'] });
         
-        // Invalidar consulta específica del post
         queryClient.invalidateQueries({ queryKey: ['posts', postId] });
         
-        // Invalidar consultas por autor
         if (post?.author) {
           queryClient.invalidateQueries({ queryKey: ['posts', post.author] });
           queryClient.invalidateQueries({ queryKey: ['postsMostLikes', post.author] });
         }
         
-        // Invalidar todas las consultas de postsMostLikes
         queryClient.invalidateQueries({ 
           predicate: (query: any) => query.queryKey[0] === 'postsMostLikes'
         });
         
-        // Forzar refetch inmediato
+
         setTimeout(() => {
           queryClient.refetchQueries({ queryKey: ['posts'] });
           queryClient.refetchQueries({ queryKey: ['recentPosts'] });
@@ -252,7 +239,7 @@ export const EditPostScreen = () => {
           });
         }, 50);
       },
-      // En caso de error, revertir los cambios locales
+
       onError: () => {
         setIsLiked(!newIsLiked);
         setLikeCount(likeCount);

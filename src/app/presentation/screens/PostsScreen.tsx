@@ -32,14 +32,12 @@ export const PostsScreen = () => {
 
   const { isVisible, hideBottomSheet } = useBottomSheet();
 
-  // Obtener todos los posts cuando no hay búsqueda
   const {
     data: allPosts = [],
     isLoading: isLoadingAllPosts,
     refetch: refetchAllPosts
   } = getPosts();
 
-  // Obtener posts filtrados por usuario cuando hay búsqueda
   const {
     data: filteredPosts = [],
     isLoading: isLoadingFilteredPosts,
@@ -50,14 +48,12 @@ export const PostsScreen = () => {
     enabled: !!(searchQuery)
   });
 
-  // Obtener posts recientes
   const {
     data: recentPosts = [],
     isLoading: isLoadingRecentPosts,
     refetch: refetchRecentPosts
   } = getRecentPosts();
 
-  // Función para manejar el refresh
   const onRefresh = async () => {
     setRefreshing(true);
     try {
@@ -73,37 +69,29 @@ export const PostsScreen = () => {
     }
   };
 
-  // Aplicar filtros a los posts
   const applyFilters = (options: FilterOptions) => {
     setFilters(options);
-    // Refrescar los datos con los nuevos filtros
     onRefresh();
   };
 
-  // Determinar qué posts mostrar basado en filtros y búsqueda
   let postsToShow = allPosts;
 
   if (searchQuery) {
-    // Si hay búsqueda, mostrar posts filtrados por búsqueda
     postsToShow = filteredPosts ?? [];
   }
   else if (filters.sortBy === 'recent') {
-    // Si se ordenan por más recientes
-    // Aseguramos que estén ordenados por fecha, más recientes primero
     postsToShow = [...recentPosts].sort((a, b) => {
       const dateA = new Date(a.date).getTime();
       const dateB = new Date(b.date).getTime();
-      return dateB - dateA; // Orden descendente (más reciente primero)
+      return dateB - dateA;
     });
   } else if (filters.sortBy === 'oldest') {
-    // Si se ordenan por más antiguos
     postsToShow = [...recentPosts].sort((a, b) => {
       const dateA = new Date(a.date).getTime();
       const dateB = new Date(b.date).getTime();
-      return dateA - dateB; // Orden ascendente (más antiguo primero)
+      return dateA - dateB;
     });
   } else if (filters.sortBy === 'likes') {
-    // Si se ordenan por likes, ordenar los posts por número de likes
     postsToShow = [...allPosts].sort((a, b) => (b.likes || 0) - (a.likes || 0));
   }
 

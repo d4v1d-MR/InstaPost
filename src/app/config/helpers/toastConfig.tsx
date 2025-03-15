@@ -4,7 +4,6 @@ import { BaseToast, ErrorToast, ToastConfig } from 'react-native-toast-message';
 
 export const toastConfig: ToastConfig = {
   success: ({ text1, text2, props }) => {
-    // Usamos el color primario del tema
     const { theme } = useTheme();
     const primaryColor = theme.colors.primary;
 

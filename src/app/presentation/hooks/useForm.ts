@@ -1,4 +1,3 @@
-// app/hooks/useForm.ts
 import { useState, useCallback } from 'react';
 
 type FormErrors<T> = Partial<Record<keyof T, string>>;
@@ -19,29 +18,27 @@ export const useForm = <T extends Record<string, any>>({
   const [touched, setTouched] = useState<Partial<Record<keyof T, boolean>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Actualizar un campo específico
   const handleChange = useCallback((name: keyof T, value: any) => {
     setValues((prev) => ({ ...prev, [name]: value }));
     
-    // Si hay validación, validar el campo cuando cambia
+
     if (validate) {
       const newErrors = validate({ ...values, [name]: value });
       setErrors((prev) => ({ ...prev, [name]: newErrors[name] }));
     }
   }, [values, validate]);
 
-  // Marcar un campo como tocado
+
   const handleBlur = useCallback((name: keyof T) => {
     setTouched((prev) => ({ ...prev, [name]: true }));
     
-    // Validar el campo cuando pierde el foco
+
     if (validate) {
       const newErrors = validate(values);
       setErrors((prev) => ({ ...prev, [name]: newErrors[name] }));
     }
   }, [values, validate]);
 
-  // Restablecer el formulario
   const resetForm = useCallback(() => {
     setValues(initialValues);
     setErrors({});
@@ -49,13 +46,11 @@ export const useForm = <T extends Record<string, any>>({
     setIsSubmitting(false);
   }, [initialValues]);
 
-  // Enviar el formulario
   const handleSubmit = useCallback(async () => {
     if (validate) {
       const newErrors = validate(values);
       setErrors(newErrors);
       
-      // Marcar todos los campos como tocados
       const allTouched = Object.keys(values).reduce((acc, key) => {
         acc[key as keyof T] = true;
         return acc;
@@ -63,7 +58,6 @@ export const useForm = <T extends Record<string, any>>({
       
       setTouched(allTouched);
       
-      // Si hay errores, no enviar
       if (Object.keys(newErrors).length > 0) {
         return;
       }

@@ -22,15 +22,12 @@ interface Props {
 
 export interface FilterOptions {
   sortBy: 'recent' | 'oldest' | 'likes';
-  // author: string;
 }
 
 export const BottomSheet = ({ visible, onClose, onApply }: Props) => {
   const { theme } = useTheme();
   const [sortBy, setSortBy] = React.useState<'recent' | 'oldest' | 'likes'>('recent');
-  // const [filterByAuthor, setFilterByAuthor] = React.useState('');
-  
-  // Animación para el bottom sheet
+
   const bottomSheetAnim = useRef(new Animated.Value(0)).current;
   
   useEffect(() => {
@@ -57,14 +54,12 @@ export const BottomSheet = ({ visible, onClose, onApply }: Props) => {
   const handleApply = () => {
     onApply({
       sortBy
-      // author: filterByAuthor
     });
     onClose();
   };
 
   const handleReset = () => {
     setSortBy('recent');
-    // setFilterByAuthor('');
   };
 
   return (
@@ -153,16 +148,6 @@ export const BottomSheet = ({ visible, onClose, onApply }: Props) => {
                   )}
                 </TouchableOpacity>
                 
-                {/* <Text style={styles(theme).filterSectionTitle}>Filtrar por usuario</Text>
-                <View style={styles(theme).authorFilterContainer}>
-                  <TextInput
-                    style={styles(theme).authorFilterInput}
-                    placeholder="Nombre del usuario"
-                    placeholderTextColor={theme.colors.secondary}
-                    value={filterByAuthor}
-                    onChangeText={setFilterByAuthor}
-                  />
-                </View> */}
               </ScrollView>
               
               <View style={styles(theme).bottomSheetFooter}>

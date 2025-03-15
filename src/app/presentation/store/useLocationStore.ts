@@ -43,7 +43,6 @@ export const useLocationStore = create<LocationState>()((set, get) => ({
       if(watchId !== null) get().clearWatchLocation();
       
       const id = watchCurrentLocation(
-        // Success callback
         (location) => {
           if (location) {
             set({
@@ -52,7 +51,6 @@ export const useLocationStore = create<LocationState>()((set, get) => ({
             });
           }
         },
-        // Error callback
         (error) => {
           console.log('Error en watchLocation:', error);
           set({ locationError: true });

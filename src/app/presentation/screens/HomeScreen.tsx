@@ -42,7 +42,6 @@ export const HomeScreen = () => {
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      // Invalidar la caché antes de refrescar
       queryClient.invalidateQueries({ queryKey: ['postsMostLikes', username] });
       
       await refetchPostsMostLikes();

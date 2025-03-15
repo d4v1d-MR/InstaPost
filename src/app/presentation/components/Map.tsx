@@ -25,7 +25,6 @@ export const Map = ({initialLocation}: Props) => {
     setLocationError
   } = useLocationStore();
 
-  // Efecto para manejar los permisos de ubicación
   useEffect(() => {
     const checkLocationPermission = async () => {
       try {
@@ -33,7 +32,6 @@ export const Map = ({initialLocation}: Props) => {
           () => {
             console.log('Permiso de ubicación concedido');
             setLocationPermissionGranted(true);
-            // Iniciar el seguimiento de ubicación
             watchLocation();
           },
           (error) => {
@@ -93,13 +91,11 @@ export const Map = ({initialLocation}: Props) => {
         return;
       }
 
-      // Si ya tenemos la última ubicación conocida, usarla
       if (lastKnownLocation && !locationError) {
         moveCameraToLocation(lastKnownLocation);
         return;
       }
 
-      // Si no, intentar obtener la ubicación actual
       const location = await getLocation();
       if (location) {
         moveCameraToLocation(location);
