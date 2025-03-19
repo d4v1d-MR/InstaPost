@@ -95,9 +95,9 @@ La arquitectura permite escalar fácilmente:
 La aplicación utiliza `react-native-dotenv` para gestionar variables de entorno. Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
 
 ```
-API_URL=http://192.168.1.36:3000
+API_URL=http://'IP_ADDRESS':3000
 API_URL_IOS=http://localhost:3000
-API_URL_ANDROID=http://192.168.1.36:3000
+API_URL_ANDROID=http://'IP_ADDRESS':3000
 ```
 
 ## Funcionalidades destacadas
